@@ -1,0 +1,6 @@
+{
+  "name": "RobloxShop",
+  "description": "A premium Roblox asset marketplace with custom live card designer, inbox download system, and admin review queue.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
