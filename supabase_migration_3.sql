@@ -1,0 +1,3 @@
+ALTER TABLE profiles 
+  ADD COLUMN IF NOT EXISTS roblox_id TEXT,
+  ADD COLUMN IF NOT EXISTS roblox_username TEXT;
