@@ -417,20 +417,22 @@ export default function FeedClient({
         </div>
       )}
 
-          <ProductModal
-            product={selectedProduct}
-            userId={userId}
-            hasLiked={likedIds.has(String(selectedProduct.id))}
-            onLikeToggle={(id, action) => applyLikeState(String(id), action)}
-            onRequireAuth={() => {
-              if (!userId) {
-                setAuthOpen(true);
-              } else {
-                setShowRobloxVerify(true);
-              }
-            }}
-            onClose={() => setSelectedProduct(null)}
-          />
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          userId={userId}
+          hasLiked={likedIds.has(String(selectedProduct.id))}
+          onLikeToggle={(id, action) => applyLikeState(String(id), action)}
+          onRequireAuth={() => {
+            if (!userId) {
+              setAuthOpen(true);
+            } else {
+              setShowRobloxVerify(true);
+            }
+          }}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
       {showRobloxVerify && <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />}
