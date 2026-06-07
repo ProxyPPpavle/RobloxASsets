@@ -13,6 +13,7 @@ import { syncProductLike } from "@/lib/syncLike";
 import { Search, Compass, Eye, ThumbsUp, Flame } from "lucide-react";
 import ProductModal from "./ProductModal";
 import AuthModal from "./AuthModal";
+import RobloxVerifyModal from "./RobloxVerifyModal";
 
 type FeedProduct = {
   id: number | string;
