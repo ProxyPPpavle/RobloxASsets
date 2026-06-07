@@ -61,6 +61,7 @@ export default function ProductModal({
   const handleBuyAction = () => {
     // If user is not authenticated (no Roblox ID), prompt verification flow
     if (!userId) {
+      console.log('Triggering auth flow');
       onRequireAuth?.();
       return;
     }

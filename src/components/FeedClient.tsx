@@ -68,7 +68,7 @@ export default function FeedClient({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [selectedProduct, setSelectedProduct] = useState<FeedProduct | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
-
+  const [showRobloxVerify, setShowRobloxVerify] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<string>>(
     () => new Set(initialLikedIds.map(String))
   );
@@ -422,12 +422,25 @@ export default function FeedClient({
           userId={userId}
           hasLiked={likedIds.has(String(selectedProduct.id))}
           onLikeToggle={(id, action) => applyLikeState(String(id), action)}
-          onRequireAuth={() => setAuthOpen(true)}
+        onRequireAuth={() => {
+          if (!userId) {
+            setAuthOpen(true);
+          } else {
+            setShowRobloxVerify(true);
+          }
+          onRequireAuth={() => {
+            if (!userId) {
+              setAuthOpen(true);
+            } else {
+              setShowRobloxVerify(true);
+            }
+          }}
           onClose={() => setSelectedProduct(null)}
         />
       )}
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
+      {showRobloxVerify && <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />}
     </motion.div>
   );
 }
