@@ -1,6 +1,6 @@
-"use client";
 
-import { useState } from "react";
+
+
 import { createClient } from "@/utils/supabase/server";
 import AppShell from "@/components/AppShell";
 import ProfileClient from "@/components/ProfileClient";
