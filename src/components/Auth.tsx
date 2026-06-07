@@ -9,18 +9,19 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [step, setStep] = useState<"request" | "verify">("request");
+  const [showRobloxVerify, setShowRobloxVerify] = useState(false);
 
   const supabase = createClient();
+
+  const trimInput = (val: string) => val.trim();
 
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    // 1. Šaljemo OTP. Po defaultu, Supabase sam kreira korisnika ako ne postoji
-    // ili samo šalje login kod ako postoji. Ne komplikujemo opcijama.
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: trimInput(email),
     });
 
     if (error) {
@@ -38,10 +39,9 @@ export default function Auth() {
     setLoading(true);
     setMessage("");
 
-    // 2. Prvo probamo sa "email" tipom (za Login/Magic Link)
     let { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token,
+      email: trimInput(email),
+      token: trimInput(token),
       type: "email",
     });
 
@@ -97,13 +97,13 @@ export default function Auth() {
               className="w-full p-3 bg-[#0d1117] text-white border border-[#30363d] rounded-lg focus:outline-none focus:border-[#58a6ff] transition-colors"
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#58a6ff] hover:bg-[#3182ce] text-white font-bold p-3 rounded-lg transition-colors shadow-lg disabled:opacity-50"
-          >
-            {loading ? "Processing..." : "Continue"}
-          </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="ml-auto w-auto bg-[#58a6ff] hover:bg-[#3182ce] text-white font-bold py-2 px-4 rounded transition"
+            >
+              {loading ? "Processing..." : "Continue"}
+            </button>
         </form>
       ) : (
         <form onSubmit={handleVerifyCode} className="space-y-4">

@@ -18,6 +18,7 @@ import { createClient } from "@/utils/supabase/client";
 import EditProfileButton from "./EditProfileButton";
 import DeleteProductButton from "./DeleteProductButton";
 import DeleteNotificationButton from "./DeleteNotificationButton";
+import RobloxVerifyModal from "@/components/RobloxVerifyModal";
 import PromoteModal from "./PromoteModal";
 import { isProductPromoted } from "@/lib/feedSort";
 
@@ -47,7 +48,7 @@ export default function ProfileClient({
   initialProducts,
   initialNotifications,
 }: {
-  profile: { username?: string; avatar_url?: string };
+  profile: { username?: string; avatar_url?: string; roblox_id?: string };
   email: string;
   memberSince: string;
   initialProducts: ProductRow[];
@@ -55,6 +56,8 @@ export default function ProfileClient({
 }) {
   const [products, setProducts] = useState(initialProducts);
   const [notifications, setNotifications] = useState(initialNotifications);
+  const [showRobloxVerify, setShowRobloxVerify] = useState(false);
+
   const [downloadedIds, setDownloadedIds] = useState<Set<number>>(new Set());
   const [promoteTarget, setPromoteTarget] = useState<{
     id: number;
@@ -108,15 +111,25 @@ export default function ProfileClient({
               </div>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
-              <EditProfileButton currentUsername={displayName} />
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="text-xs font-sans font-semibold text-slate-400 hover:text-white py-2 px-3 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                Disconnect
-              </button>
+               <EditProfileButton currentUsername={displayName} />
+               {profile.roblox_id ? null : (
+                <button
+                  type="button"
+                  onClick={() => setShowRobloxVerify(true)}
+                  className="text-xs font-sans font-semibold text-slate-400 hover:text-white py-2 px-3 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  Verify Roblox
+                </button>
+              )}
+               <button
+                 type="button"
+                 onClick={handleLogout}
+                 className="text-xs font-sans font-semibold text-slate-400 hover:text-white py-2 px-3 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+               >
+                 <LogOut className="w-3.5 h-3.5" />
+                 Disconnect
+               </button>
+
             </div>
           </div>
 
@@ -359,6 +372,9 @@ export default function ProfileClient({
             );
           }}
         />
+      )}
+      {showRobloxVerify && (
+        <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />
       )}
     </div>
   );

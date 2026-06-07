@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import { createClient } from "@/utils/supabase/server";
 import AppShell from "@/components/AppShell";
 import ProfileClient from "@/components/ProfileClient";
 import Auth from "@/components/Auth";
+import RobloxVerifyModal from "@/components/RobloxVerifyModal";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -50,6 +54,7 @@ export default async function ProfilePage() {
         profile={{
           username: profile?.username,
           avatar_url: profile?.avatar_url,
+          roblox_id: profile?.roblox_id,
         }}
         email={session.user.email ?? ""}
         memberSince={new Date(

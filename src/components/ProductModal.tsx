@@ -59,6 +59,11 @@ export default function ProductModal({
   };
 
   const handleBuyAction = () => {
+    // If user is not authenticated (no Roblox ID), prompt verification flow
+    if (!userId) {
+      onRequireAuth?.();
+      return;
+    }
     trackClick();
     if (product.gamepass_link) {
       window.open(product.gamepass_link, "_blank", "noreferrer");
