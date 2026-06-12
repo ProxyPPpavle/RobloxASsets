@@ -40,7 +40,7 @@ export default async function Home() {
       return data;
     },
     ["feed-products"],
-    { revalidate: 30 }
+    { revalidate: 3600 }
   );
 
   const products = await getProducts();

@@ -49,7 +49,8 @@ export async function POST(req: NextRequest) {
         }
 
         // 2. Upload slike na Supabase
-        const imageName = `${Date.now()}_${imageFile.name}`;
+        const extImg = imageFile.name.split('.').pop();
+        const imageName = `${crypto.randomUUID()}.${extImg}`;
         const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
         
         const { error: imgErr } = await supabase.storage
@@ -63,7 +64,8 @@ export async function POST(req: NextRequest) {
         }
 
         // 3. Upload .rbxm fajla na Supabase
-        const fileName = `${Date.now()}_${itemFile.name}`;
+        const extFile = itemFile.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${extFile}`;
         const itemBuffer = Buffer.from(await itemFile.arrayBuffer());
         const jeRobloxFajl = itemFile.name.endsWith('.rbxm') || itemFile.name.endsWith('.rbxl');
 

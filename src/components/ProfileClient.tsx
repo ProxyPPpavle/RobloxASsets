@@ -135,7 +135,7 @@ export default function ProfileClient({
                 <button
                   type="button"
                   onClick={() => setShowRobloxVerify(true)}
-                  className="text-xs font-sans font-semibold text-slate-400 hover:text-white py-2 px-3 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="text-xs font-sans font-bold text-white bg-[#58a6ff] hover:bg-[#3182ce] py-2 px-4 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-lg"
                 >
                   Verify Roblox
                 </button>
