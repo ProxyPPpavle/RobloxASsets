@@ -42,6 +42,7 @@ export default function ProductModal({
   const [downloadDone, setDownloadDone] = useState(false);
   const [liked, setLiked] = useState(hasLiked);
   const [likes, setLikes] = useState(product.product_analytics?.likes ?? 0);
+  const [checkingOwnership, setCheckingOwnership] = useState(false);
 
   const isFree = (product.price ?? 0) === 0;
 
@@ -58,15 +59,47 @@ export default function ProductModal({
     }
   };
 
-  const handleBuyAction = () => {
-    // If user is not authenticated (no Roblox ID), prompt verification flow
+  const handleBuyAction = async () => {
+    // If user is not authenticated (no userId), prompt auth flow
     if (!userId) {
       console.log('Triggering auth flow');
       onRequireAuth?.();
       return;
     }
     trackClick();
+    
     if (product.gamepass_link) {
+      const match = product.gamepass_link.match(/game-pass\/(\d+)/);
+      const gamepassId = match ? match[1] : null;
+
+      if (gamepassId) {
+        setCheckingOwnership(true);
+        try {
+          const res = await fetch(`/api/roblox/check-gamepass?gamepassId=${gamepassId}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.owns) {
+              setCheckingOwnership(false);
+              if (product.file_url) {
+                window.open(product.file_url, "_blank");
+                setDownloadDone(true);
+              } else {
+                alert("You own this gamepass, but no file is available for download.");
+              }
+              return;
+            }
+          } else if (res.status === 403) {
+            // Need to verify Roblox account
+            setCheckingOwnership(false);
+            onRequireAuth?.();
+            return;
+          }
+        } catch (e) {
+          console.error('Ownership check failed:', e);
+        }
+        setCheckingOwnership(false);
+      }
+
       window.open(product.gamepass_link, "_blank", "noreferrer");
     }
   };
@@ -210,10 +243,13 @@ export default function ProductModal({
               <button
                 type="button"
                 onClick={handleBuyAction}
-                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-mono font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
+                disabled={checkingOwnership}
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg text-xs font-mono font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
               >
-                <span>Buy for R$ {product.price} Robux</span>
-                <ExternalLink className="w-4 h-4 text-white" />
+                <span>
+                  {checkingOwnership ? "Checking..." : `Buy for R$ ${product.price} Robux`}
+                </span>
+                {!checkingOwnership && <ExternalLink className="w-4 h-4 text-white" />}
               </button>
             )}
             <p className="text-[10px] text-gray-500 text-center mt-3 font-mono">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Auth() {
@@ -11,6 +11,11 @@ export default function Auth() {
   const [step, setStep] = useState<"request" | "verify">("request");
   const [showRobloxVerify, setShowRobloxVerify] = useState(false);
 
+  useEffect(() => {
+    const cached = localStorage.getItem("roblox_shop_email");
+    if (cached) setEmail(cached);
+  }, []);
+
   const supabase = createClient();
 
   const trimInput = (val: string) => val.trim();
@@ -20,8 +25,11 @@ export default function Auth() {
     setLoading(true);
     setMessage("");
 
+    const emailToUse = trimInput(email);
+    localStorage.setItem("roblox_shop_email", emailToUse);
+
     const { error } = await supabase.auth.signInWithOtp({
-      email: trimInput(email),
+      email: emailToUse,
     });
 
     if (error) {

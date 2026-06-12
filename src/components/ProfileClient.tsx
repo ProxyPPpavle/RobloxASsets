@@ -12,7 +12,7 @@ import {
   CheckCircle,
   AlertCircle,
   DownloadCloud,
-  LogOut,
+  Trash2,
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import EditProfileButton from "./EditProfileButton";
@@ -78,7 +78,16 @@ export default function ProfileClient({
     setDownloadedIds((prev) => new Set(prev).add(msg.notification_id));
   };
 
-  const handleLogout = async () => {
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmed) return;
+    // Delete profile row (cascade will handle related data)
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from("profiles").delete().eq("id", user.id);
+    }
     await supabase.auth.signOut();
     window.location.href = "/";
   };
@@ -89,6 +98,16 @@ export default function ProfileClient({
         {/* Main Header and Metrics */}
         <div className="w-full space-y-6">
           <div className="bg-[#151b2d] border border-slate-700/90 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden shadow-xl">
+            {/* Delete account icon - top right corner */}
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              title="Delete account"
+              className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-950/30 transition-all cursor-pointer z-10"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+
             <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-blue-500 bg-slate-900 shrink-0">
                 <img
@@ -121,15 +140,6 @@ export default function ProfileClient({
                   Verify Roblox
                 </button>
               )}
-               <button
-                 type="button"
-                 onClick={handleLogout}
-                 className="text-xs font-sans font-semibold text-slate-400 hover:text-white py-2 px-3 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-               >
-                 <LogOut className="w-3.5 h-3.5" />
-                 Disconnect
-               </button>
-
             </div>
           </div>
 
