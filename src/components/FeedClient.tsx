@@ -213,7 +213,7 @@ export default function FeedClient({
         data-product-id={id}
         layoutId={`asset-card-layout-${asset.id}`}
         onClick={() => openProduct(asset)}
-        className="group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate border border-slate-850 hover:border-slate-700/80 hover:shadow-[0_0_25px_rgba(37,99,235,0.15)]"
+        className="group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate border border-blue-500/40 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(37,99,235,0.25)]"
         style={{
           backgroundColor: theme.bg.startsWith("http") ? "#13192b" : theme.bg,
           backgroundImage: theme.bg.startsWith("http") ? `url(${theme.bg})` : undefined,

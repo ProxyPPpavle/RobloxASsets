@@ -43,8 +43,8 @@ export default function SiteFooter() {
               Legal & Info
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li><a href="#privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
-              <li><a href="#terms" className="hover:text-blue-400 transition-colors">Terms of Service</a></li>
+              <li><Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
               <li><a href="#dmca" className="hover:text-blue-400 transition-colors">DMCA Compliance</a></li>
               <li><a href="#cookies" className="hover:text-blue-400 transition-colors">Cookie Settings</a></li>
             </ul>
