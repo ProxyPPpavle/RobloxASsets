@@ -5,9 +5,10 @@ export async function GET(req: Request) {
   const next = searchParams.get('next') || '/profile';
   
   const clientId = process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID;
-  const redirectUri = process.env.NEXT_PUBLIC_SITE_URL 
-    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/api/roblox/callback`
-    : 'https://assetspp.vercel.app/api/roblox/callback';
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'assetspp.vercel.app';
+  const protocol = req.headers.get('x-forwarded-proto') || 'https';
+  const origin = `${protocol}://${host}`;
+  const redirectUri = `${origin}/api/roblox/callback`;
 
   if (!clientId) {
     return NextResponse.json({ error: 'Missing Roblox Client ID in env' }, { status: 500 });
