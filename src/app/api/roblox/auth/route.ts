@@ -6,8 +6,8 @@ export async function GET(req: Request) {
   
   const clientId = process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID;
   const redirectUri = process.env.NEXT_PUBLIC_SITE_URL 
-    ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/roblox/callback`
-    : 'https://assetspp.vercel.app/api/roblox/callback'; // Fallback to vercel
+    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/api/roblox/callback`
+    : 'https://assetspp.vercel.app/api/roblox/callback';
 
   if (!clientId) {
     return NextResponse.json({ error: 'Missing Roblox Client ID in env' }, { status: 500 });

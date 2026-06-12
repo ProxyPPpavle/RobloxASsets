@@ -14,7 +14,7 @@ export async function GET(req: Request) {
   const clientId = process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID;
   const clientSecret = process.env.ROBLOX_CLIENT_SECRET;
   const redirectUri = process.env.NEXT_PUBLIC_SITE_URL 
-    ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/roblox/callback`
+    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/api/roblox/callback`
     : 'https://assetspp.vercel.app/api/roblox/callback';
 
   if (!clientId || !clientSecret) {
