@@ -13,10 +13,8 @@ export async function GET(req: Request) {
 
   const clientId = process.env.NEXT_PUBLIC_ROBLOX_CLIENT_ID;
   const clientSecret = process.env.ROBLOX_CLIENT_SECRET;
-  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'assetspp.vercel.app';
-  const protocol = req.headers.get('x-forwarded-proto') || 'https';
-  const origin = `${protocol}://${host}`;
-  const redirectUri = `${origin}/api/roblox/callback`;
+  // HARDCODE to exactly match the Roblox Dashboard to avoid Vercel preview domain mismatches
+  const redirectUri = 'https://assetspp.vercel.app/api/roblox/callback';
 
   if (!clientId || !clientSecret) {
     return NextResponse.json({ error: 'Missing Roblox credentials in env' }, { status: 500 });
