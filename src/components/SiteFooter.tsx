@@ -45,30 +45,17 @@ export default function SiteFooter() {
             <ul className="space-y-2 text-xs text-slate-400">
               <li><Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
-              <li><a href="#dmca" className="hover:text-blue-400 transition-colors">DMCA Compliance</a></li>
-              <li><a href="#cookies" className="hover:text-blue-400 transition-colors">Cookie Settings</a></li>
+              <li><Link href="/dmca" className="hover:text-blue-400 transition-colors">DMCA Compliance</Link></li>
+              <li><Link href="/cookies" className="hover:text-blue-400 transition-colors">Cookie Settings</Link></li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Resources</h4>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li><a href="#faq" className="hover:text-blue-400 transition-colors">FAQ & Help</a></li>
-              <li><a href="#support" className="hover:text-blue-400 transition-colors">Developer Support</a></li>
-              <li><a href="#roblox" className="hover:text-blue-400 transition-colors">Roblox Guidelines</a></li>
-              <li><a href="#contact" className="hover:text-blue-400 transition-colors">Contact</a></li>
+              <li><a href="mailto:assetsppteam@gmail.com" className="hover:text-blue-400 transition-colors">Developer Support</a></li>
+              <li><a href="mailto:assetsppteam@gmail.com" className="hover:text-blue-400 transition-colors">Contact</a></li>
             </ul>
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-          <div>
-            &copy; {new Date().getFullYear()} AssetsPP Portal. Not affiliated with Roblox
-            Corporation.
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Developer Cloud Hub Online</span>
           </div>
         </div>
       </div>

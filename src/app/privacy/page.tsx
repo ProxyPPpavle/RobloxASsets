@@ -39,7 +39,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">5. Contact</h2>
-            <p>If you have any questions regarding your privacy, please contact us at: <a href="mailto:ppextensionstore@gmail.com" className="text-blue-400 hover:underline">ppextensionstore@gmail.com</a></p>
+            <p>If you have any questions regarding your privacy, please contact us at: <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline">assetsppteam@gmail.com</a></p>
           </section>
         </div>
       </div>

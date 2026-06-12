@@ -21,6 +21,7 @@ export default function TermsPage() {
               <li>No uploading or distributing suspicious files, malware, or viruses.</li>
               <li>No scamming, fraud, or deceptive practices targeting other users.</li>
             </ul>
+            <p className="mt-4 font-bold text-blue-400">Please note: Our admin team manually reviews all published assets to ensure compliance before they appear on the public feed.</p>
           </section>
 
           <section>
@@ -30,7 +31,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">3. Contact</h2>
-            <p>If you have any questions or concerns regarding these terms, please contact us at: <a href="mailto:ppextensionstore@gmail.com" className="text-blue-400 hover:underline">ppextensionstore@gmail.com</a></p>
+            <p>If you have any questions or concerns regarding these terms, please contact us at: <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline">assetsppteam@gmail.com</a></p>
           </section>
         </div>
       </div>
