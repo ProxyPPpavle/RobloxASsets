@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Flame } from "lucide-react";
-
-const PROMO_PLANS = [
-  { days: 1, label: "Starter", hint: "+1 day boost" },
-  { days: 2, label: "Bronze", hint: "+2 days boost" },
-  { days: 3, label: "Silver", hint: "+3 days boost" },
-  { days: 4, label: "Gold", hint: "+4 days boost" },
-  { days: 5, label: "Platinum", hint: "+5 days boost" },
-  { days: 6, label: "Elite", hint: "+6 days boost" },
-] as const;
+import { X, Flame, ExternalLink } from "lucide-react";
 
 export default function PromoteModal({
   productId,
@@ -23,17 +14,19 @@ export default function PromoteModal({
   onClose: () => void;
   onPromoted?: (promotedUntil: string) => void;
 }) {
-  const [loadingDays, setLoadingDays] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSelect = async (days: number) => {
-    setLoadingDays(days);
+  const handlePromote = async () => {
+    setLoading(true);
     setError(null);
     try {
+      // NOTE: In the future, this endpoint will check the Roblox API 
+      // to verify if the user actually owns the gamepass before promoting.
       const res = await fetch(`/api/products/${productId}/promote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ days }),
+        body: JSON.stringify({ days: 1 }),
       });
       const data = await res.json();
       if (!data.success) {
@@ -45,16 +38,16 @@ export default function PromoteModal({
     } catch {
       setError("Network error. Try again.");
     } finally {
-      setLoadingDays(null);
+      setLoading(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[60] p-4">
-      <div className="bg-[#151b2d] border border-amber-900/40 rounded-2xl w-full max-w-lg shadow-[0_0_40px_rgba(245,158,11,0.12)] overflow-hidden">
+      <div className="bg-[#151b2d] border border-blue-900/40 rounded-2xl w-full max-w-md shadow-[0_0_40px_rgba(37,99,235,0.12)] overflow-hidden">
         <div className="p-5 border-b border-slate-800 flex items-start justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 text-amber-400 mb-1">
+            <div className="flex items-center gap-2 text-blue-400 mb-1">
               <Flame className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-widest">Promote asset</span>
             </div>
@@ -62,7 +55,7 @@ export default function PromoteModal({
               {productTitle || "Your listing"}
             </h3>
             <p className="text-xs text-slate-400 mt-1">
-              Pick a plan — each option adds promotion days. Payment links coming soon.
+              Boost your asset visibility for 1 day.
             </p>
           </div>
           <button
@@ -74,26 +67,38 @@ export default function PromoteModal({
           </button>
         </div>
 
-        <div className="p-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {PROMO_PLANS.map((plan) => (
-            <button
-              key={plan.days}
-              type="button"
-              disabled={loadingDays !== null}
-              onClick={() => handleSelect(plan.days)}
-              className="flex flex-col items-center gap-1.5 p-4 rounded-xl border border-slate-700 bg-[#111625] hover:border-amber-500/60 hover:bg-amber-950/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+        <div className="p-6 space-y-6">
+          <div className="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 text-center">
+            <h4 className="text-white font-bold mb-2">Step 1: Purchase Gamepass</h4>
+            <p className="text-xs text-slate-400 mb-4">
+              To promote your asset, you must purchase the 1-Day Promote Gamepass on Roblox.
+            </p>
+            <a 
+              href="https://www.roblox.com/game-pass/1405763143/400rbx" 
+              target="_blank" 
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#13192b] hover:bg-slate-800 border border-slate-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors"
             >
-              <span className="text-2xl font-black text-amber-400">{plan.days}d</span>
-              <span className="text-xs font-bold text-white">{plan.label}</span>
-              <span className="text-[10px] text-slate-500">{plan.hint}</span>
-              <span className="text-[10px] font-mono text-slate-400 mt-1 px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
-                Pay — R$
-              </span>
-              {loadingDays === plan.days && (
-                <span className="text-[10px] text-amber-400 animate-pulse">Applying…</span>
-              )}
+              Buy Gamepass (400 R$) <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+
+          <div className="text-center space-y-3">
+            <h4 className="text-white font-bold">Step 2: Verify & Activate</h4>
+            <p className="text-xs text-slate-400">
+              Already bought it? Click below to verify your purchase and activate the promotion.
+              <br/><br/>
+              <span className="text-amber-400 font-semibold block">⚠️ Promoted content has special priority in the feed!</span>
+            </p>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={handlePromote}
+              className="w-full mt-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-wait text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-900/20"
+            >
+              {loading ? "Verifying..." : "Verify Purchase & Promote"}
             </button>
-          ))}
+          </div>
         </div>
 
         {error && (

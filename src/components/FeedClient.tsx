@@ -156,7 +156,7 @@ export default function FeedClient({
     }
   };
 
-  const { promoted: promotedAssets, regular: regularAssets, hasAny } = useMemo(() => {
+  const { finalFeed, hasAny } = useMemo(() => {
     const categoryFiltered = localProducts.filter(
       (item) => categoryFilter === "All" || item.category === categoryFilter
     );
@@ -166,17 +166,56 @@ export default function FeedClient({
       sortBy,
       sortDirection
     );
+
+    const interleave = (assets: FeedProduct[]) => {
+      const newest = [...assets].sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      const popular = [...assets].sort((a,b) => (b.product_analytics?.likes || 0) - (a.product_analytics?.likes || 0));
+      const res: FeedProduct[] = [];
+      const used = new Set<string>();
+      let nIdx = 0; let pIdx = 0;
+      while(used.size < assets.length) {
+        let addedN = 0;
+        while(addedN < 2 && nIdx < newest.length) {
+          const p = newest[nIdx++];
+          if(!used.has(String(p.id))) { res.push(p); used.add(String(p.id)); addedN++; }
+        }
+        let addedP = 0;
+        while(addedP < 2 && pIdx < popular.length) {
+          const p = popular[pIdx++];
+          if(!used.has(String(p.id))) { res.push(p); used.add(String(p.id)); addedP++; }
+        }
+      }
+      return res;
+    };
+
+    const regMixed = interleave(regular);
+    const proMixed = interleave(promoted);
+
+    const feed: FeedProduct[] = [];
+    let r = 0; let p = 0;
+    let isPromotedRow = false;
+    
+    while(r < regMixed.length || p < proMixed.length) {
+      if(isPromotedRow) {
+        if(p < proMixed.length) {
+          feed.push(...proMixed.slice(p, p + 4));
+          p += 4;
+        }
+        isPromotedRow = false;
+      } else {
+        if(r < regMixed.length) {
+          feed.push(...regMixed.slice(r, r + 4));
+          r += 4;
+        }
+        isPromotedRow = true;
+      }
+    }
+
     return {
-      promoted,
-      regular,
-      hasAny: promoted.length + regular.length > 0,
+      finalFeed: feed,
+      hasAny: feed.length > 0
     };
   }, [localProducts, searchQuery, categoryFilter, sortBy, sortDirection]);
-
-  const feedItems = useMemo(
-    () => [...promotedAssets, ...regularAssets],
-    [promotedAssets, regularAssets]
-  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -203,6 +242,10 @@ export default function FeedClient({
     const promoted = isProductPromoted(asset);
     const isFree = (asset.price ?? 0) === 0;
 
+    const likes = asset.product_analytics?.likes || 0;
+    const clicks = asset.product_analytics?.clicks || 1; // avoid division by zero
+    const isGoated = likes >= 5 && (likes / clicks) > 0.05;
+
     return (
       <motion.div
         key={asset.id}
@@ -221,8 +264,13 @@ export default function FeedClient({
         }}
       >
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
+          {isGoated && (
+            <span className="text-[10px] font-sans font-black px-2 py-1 rounded-lg uppercase border bg-fuchsia-950/60 text-fuchsia-400 border-fuchsia-900/50 shadow-lg flex items-center gap-0.5" title="Exceptional Like/Click Ratio">
+              🐐 GOATED
+            </span>
+          )}
           {promoted && (
-            <span className="text-[10px] font-sans font-black px-2 py-1 rounded-lg uppercase border bg-amber-950/60 text-amber-400 border-amber-900/50 shadow-lg flex items-center gap-0.5">
+            <span className="text-[10px] font-sans font-black px-2 py-1 rounded-lg uppercase border bg-amber-950/60 text-amber-400 border-amber-900/50 shadow-lg flex items-center gap-0.5" title="Promoted Content">
               <Flame className="w-3 h-3" />
               HOT
             </span>
@@ -394,26 +442,8 @@ export default function FeedClient({
           </p>
         </div>
       ) : (
-        <div className="space-y-8 pt-2">
-          {promotedAssets.length > 0 && (
-            <section>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-amber-500/90 mb-3 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5" />
-                Promoted — top row
-              </p>
-              <div className={GRID_CLASS}>{promotedAssets.map(renderCard)}</div>
-            </section>
-          )}
-          {regularAssets.length > 0 && (
-            <section>
-              {promotedAssets.length > 0 && (
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-3">
-                  All listings
-                </p>
-              )}
-              <div className={GRID_CLASS}>{regularAssets.map(renderCard)}</div>
-            </section>
-          )}
+        <div className="space-y-4 pt-2">
+          <div className={GRID_CLASS}>{finalFeed.map(renderCard)}</div>
         </div>
       )}
 
