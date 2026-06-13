@@ -233,7 +233,7 @@ export default function FeedClient({
 
     cardRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [bumpAnalytics, feedItems]);
+  }, [bumpAnalytics, finalFeed]);
 
   const renderCard = (asset: FeedProduct) => {
     const id = String(asset.id);
