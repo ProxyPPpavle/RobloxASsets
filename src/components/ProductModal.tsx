@@ -34,6 +34,7 @@ export default function ProductModal({
     gamepass_link?: string | null;
     profiles?: { username?: string } | null;
     product_analytics?: { views?: number; clicks?: number; likes?: number } | null;
+    product_monetization?: { promoted?: boolean; promoted_until?: string | null } | null;
   };
   onClose: () => void;
   userId?: string | null;
