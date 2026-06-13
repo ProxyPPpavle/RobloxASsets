@@ -12,7 +12,9 @@ import {
   ExternalLink,
   DownloadCloud,
   CheckCircle,
+  Flame,
 } from "lucide-react";
+import { isProductPromoted } from "@/lib/feedSort";
 
 export default function ProductModal({
   product,
@@ -136,9 +138,16 @@ export default function ProductModal({
       >
         <div className="md:col-span-7 min-h-[360px] md:min-h-[480px] h-full relative overflow-hidden flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-white/10 bg-[#13192b]">
           <div className="relative z-10 flex items-center justify-between pb-2">
-            <span className="text-[9px] bg-black/80 backdrop-blur-md border border-white/10 text-cyan-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">
-              ASSET PREVIEW
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[9px] bg-black/80 backdrop-blur-md border border-white/10 text-cyan-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">
+                ASSET PREVIEW
+              </span>
+              {isProductPromoted(product) && (
+                <span className="text-[9px] bg-amber-950/60 backdrop-blur-md border border-amber-900/50 text-amber-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-lg">
+                  <Flame className="w-3 h-3" /> HOT
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="my-auto py-3 relative z-10 w-full flex items-center justify-center">
@@ -253,7 +262,7 @@ export default function ProductModal({
               </button>
             )}
             <p className="text-[10px] text-gray-500 text-center mt-3 font-mono">
-              Paid purchases open Roblox gamepass. Purchase verification coming soon.
+              Buy And let us confirm transaction! Your assets will be in inbox
             </p>
           </div>
         </div>

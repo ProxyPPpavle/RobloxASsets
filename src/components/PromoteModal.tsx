@@ -69,10 +69,7 @@ export default function PromoteModal({
 
         <div className="p-6 space-y-6">
           <div className="bg-blue-950/30 border border-blue-900/50 rounded-xl p-4 text-center">
-            <h4 className="text-white font-bold mb-2">Step 1: Purchase Gamepass</h4>
-            <p className="text-xs text-slate-400 mb-4">
-              To promote your asset, you must purchase the 1-Day Promote Gamepass on Roblox.
-            </p>
+            <h4 className="text-white font-bold mb-4">Step 1: Purchase Gamepass</h4>
             <a 
               href="https://www.roblox.com/game-pass/1405763143/400rbx" 
               target="_blank" 
