@@ -16,9 +16,11 @@ export default function Navbar({ user }: { user: User | null; role?: string }) {
           href="/"
           className="flex items-center gap-2.5 cursor-pointer group pointer-events-auto"
         >
-          <div className="w-8 h-8 md:w-9 md:h-9 bg-blue-600 rounded-xl flex items-center justify-center font-display font-black text-white group-hover:scale-105 transition-all duration-300 shadow-lg shadow-blue-900/30">
-            A
-          </div>
+          <img 
+            src="/LogoAssetsPP.png" 
+            alt="AssetsPP Logo" 
+            className="w-8 h-8 md:w-9 md:h-9 object-contain group-hover:scale-105 transition-all duration-300 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" 
+          />
           <span className="text-lg md:text-xl font-display font-bold text-white tracking-tight drop-shadow-sm">
             Assets<span className="text-blue-500 font-extrabold">PP</span>
           </span>

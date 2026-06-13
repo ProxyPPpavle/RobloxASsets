@@ -77,8 +77,15 @@ export default function Auth() {
   return (
     <div className="w-full max-w-md mx-auto bg-[#161b22] border border-[#30363d] p-8 rounded-2xl shadow-2xl relative overflow-hidden">
       
+      <div className="flex justify-center mb-6">
+        <img 
+          src="/LogoAssetsPP.png" 
+          alt="AssetsPP Logo" 
+          className="w-16 h-16 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.6)]" 
+        />
+      </div>
       <h2 className="text-2xl font-extrabold text-white mb-2 text-center">
-        {step === "request" ? "Welcome to RobloxShop" : "Verify Your Email"}
+        {step === "request" ? "Welcome to AssetsPP" : "Verify Your Email"}
       </h2>
       <p className="text-[#8b949e] text-center mb-6 text-sm">
         {step === "request" 

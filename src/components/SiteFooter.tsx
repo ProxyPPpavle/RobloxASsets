@@ -8,9 +8,11 @@ export default function SiteFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           <div className="space-y-4 md:col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-display font-black text-white shadow-md">
-                A
-              </div>
+              <img 
+                src="/LogoAssetsPP.png" 
+                alt="AssetsPP Logo" 
+                className="w-8 h-8 object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" 
+              />
               <span className="text-lg font-bold text-white tracking-tight">
                 Assets<span className="text-blue-500 font-extrabold">PP</span>
               </span>
