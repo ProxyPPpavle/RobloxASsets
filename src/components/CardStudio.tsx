@@ -18,14 +18,7 @@ interface CardStudioProps {
 }
 
 
-const FRAMES = [
-  { id: 'none', name: 'No Custom Border', class: '' },
-  { id: 'frame-neon-green', name: 'Emerald Core', class: 'frame-neon-green' },
-  { id: 'frame-cosmic-blue', name: 'Sapphire Edge', class: 'frame-cosmic-blue' },
-  { id: 'frame-golden-sparkle', name: 'Imperial Gold', class: 'frame-golden-sparkle' },
-  { id: 'frame-fiery-red', name: 'Crimson Surge', class: 'frame-fiery-red' },
-  { id: 'frame-anim-dash', name: 'Cosmic Border', class: 'frame-anim-dash' },
-];
+// Removed FRAMES presets as requested by user
 
 const FONTS = [
   { id: 'font-sans', name: 'Inter (Clean Standard)' },
@@ -52,7 +45,7 @@ export default function CardStudio({
     }
   };
 
-  const currentFrame = FRAMES.find(f => f.id === styles.frameStyle) || FRAMES[0];
+  // No preset frame selected
 
   const currentTitleColor = styles.titleColor || styles.textColor || '#FFFFFF';
   const currentDescColor = styles.descriptionColor || '#9CA3AF';
@@ -87,34 +80,14 @@ export default function CardStudio({
             </span>
           </div>
           
-          <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto max-h-[300px] scrollbar-thin scrollbar-thumb-cyan-500/15 scrollbar-track-transparent pr-1">
-            {FRAMES.map((f) => {
-              const isSelected = styles.frameStyle === f.id || (f.id === 'none' && !styles.frameStyle);
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => onChangeStyles({ frameStyle: f.id })}
-                  className={`p-2 rounded-xl text-left border text-[11px] font-medium cursor-pointer transition-all shrink-0 sm:shrink-0 ${
-                    isSelected
-                      ? 'border-cyan-400 bg-cyan-950/40 text-white shadow-[0_0_12px_rgba(34,211,238,0.3)]'
-                      : 'border-slate-700 bg-[#0d1222] text-slate-350 hover:text-white hover:bg-[#111625] hover:border-slate-500'
-                  }`}
-                >
-                  <div className="font-semibold truncate">{f.name}</div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Border Width Customizer Slider */}
-          {styles.frameStyle && styles.frameStyle !== 'none' && (
-            <div className="pt-2 border-t border-slate-700/60 space-y-1">
-              <span className="text-[9px] font-mono font-bold text-slate-450 uppercase tracking-wider block">Thickness:</span>
+          {/* Border Customizer */}
+          <div className="pt-2 sm:pt-0 border-slate-700/60 space-y-3">
+            <div>
+              <span className="text-[9px] font-mono font-bold text-slate-450 uppercase tracking-wider block mb-1">Thickness:</span>
               <div className="flex items-center gap-1.5">
                 <input
                   type="range"
-                  min="1"
+                  min="0"
                   max="6"
                   step="0.5"
                   value={styles.borderWidth !== undefined ? styles.borderWidth : 1.5}
@@ -126,19 +99,19 @@ export default function CardStudio({
                   {styles.borderWidth !== undefined ? styles.borderWidth : 1.5}px
                 </span>
               </div>
-              
-              <div className="pt-2 flex items-center justify-between gap-2">
-                 <span className="text-[9px] font-mono font-bold text-slate-450 uppercase tracking-wider block">Custom Color:</span>
-                 <input
-                    type="color"
-                    value={styles.borderColor || '#3b82f6'}
-                    onChange={(e) => onChangeStyles({ borderColor: e.target.value })}
-                    className="w-6 h-6 rounded border border-slate-700 bg-transparent cursor-pointer p-0 shrink-0"
-                    title="Border color"
-                 />
-              </div>
             </div>
-          )}
+            
+            <div className="flex items-center justify-between gap-2 border-t border-slate-700/60 pt-3">
+               <span className="text-[9px] font-mono font-bold text-slate-450 uppercase tracking-wider block">Custom Color:</span>
+               <input
+                  type="color"
+                  value={styles.borderColor || '#3b82f6'}
+                  onChange={(e) => onChangeStyles({ borderColor: e.target.value })}
+                  className="w-6 h-6 rounded border border-slate-700 bg-transparent cursor-pointer p-0 shrink-0"
+                  title="Border color"
+               />
+            </div>
+          </div>
         </div>
 
         {/* Center/Right inside Left side: Unified Live preview card */}
@@ -146,15 +119,15 @@ export default function CardStudio({
           
           <div className="w-full max-w-[245px]">
             <div 
-              className={`w-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 relative select-none isolate ${currentFrame.class}`}
+              className="w-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 relative select-none isolate"
               style={{
                 backgroundColor: styles.bgColor,
                 backgroundImage: styles.bgImage ? `url(${styles.bgImage})` : undefined,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                borderWidth: styles.frameStyle && styles.frameStyle !== 'none' && styles.borderWidth !== undefined ? `${styles.borderWidth}px` : undefined,
-                borderColor: styles.borderColor || undefined,
-                borderStyle: styles.frameStyle !== 'none' && styles.borderColor ? 'solid' : undefined,
+                borderWidth: styles.borderWidth !== undefined ? `${styles.borderWidth}px` : '1.5px',
+                borderColor: styles.borderColor || '#3b82f6',
+                borderStyle: 'solid',
                 transform: 'translate3d(0, 0, 0)'
               }}
             >

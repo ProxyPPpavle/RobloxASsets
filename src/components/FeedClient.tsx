@@ -33,6 +33,9 @@ type FeedProduct = {
     description_color?: string;
     bg_color_or_image?: string;
     bg_image_storage_url?: string | null;
+    border_style?: string | null;
+    border_color?: string | null;
+    border_width?: number | null;
   } | null;
   styles?: Record<string, string>;
 };
@@ -40,6 +43,9 @@ type FeedProduct = {
 function cardTheme(asset: FeedProduct) {
   const c = asset.product_customization;
   const s = asset.styles ?? {};
+  const borderColor = c?.border_color || (s.borderColor as string) || null;
+  const borderWidth = c?.border_width || null;
+  const hasBorder = !!(borderColor && borderWidth);
   return {
     bg:
       c?.bg_image_storage_url ||
@@ -48,6 +54,9 @@ function cardTheme(asset: FeedProduct) {
       "#13192b",
     titleColor: c?.title_color || (s.titleColor as string) || "#FFFFFF",
     descColor: c?.description_color || (s.descriptionColor as string) || "#94A3B8",
+    borderColor,
+    borderWidth,
+    hasBorder,
   };
 }
 
@@ -74,6 +83,7 @@ export default function FeedClient({
     () => new Set(initialLikedIds.map(String))
   );
   const [localProducts, setLocalProducts] = useState(products);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const bumpAnalytics = useCallback(
@@ -237,6 +247,24 @@ export default function FeedClient({
 
   const renderCard = (asset: FeedProduct) => {
     const id = String(asset.id);
+
+    // Ghost card for deleted posts
+    if (deletedIds.has(id)) {
+      return (
+        <div
+          key={id}
+          className="rounded-2xl overflow-hidden flex flex-col relative select-none isolate border border-slate-700/40 bg-[#0d1117] opacity-60"
+          style={{ minHeight: 280 }}
+        >
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 p-6 text-center">
+            <span className="text-3xl">🗑️</span>
+            <p className="text-xs font-mono text-slate-400 font-bold">Author has deleted this post.</p>
+            <p className="text-[10px] text-slate-600">This listing is no longer available.</p>
+          </div>
+        </div>
+      );
+    }
+
     const hasLiked = likedIds.has(id);
     const theme = cardTheme(asset);
     const promoted = isProductPromoted(asset);
@@ -245,6 +273,14 @@ export default function FeedClient({
     const likes = asset.product_analytics?.likes || 0;
     const clicks = asset.product_analytics?.clicks || 1; // avoid division by zero
     const isGoated = likes >= 5 && (likes / clicks) > 0.05;
+
+    // Dynamic border: use custom border if set, else default blue
+    const borderStyle = theme.hasBorder
+      ? { border: `${theme.borderWidth}px solid ${theme.borderColor}` }
+      : {};
+    const borderClass = theme.hasBorder
+      ? "group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate"
+      : "group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate border border-blue-500/40 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(37,99,235,0.25)]";
 
     return (
       <motion.div
@@ -256,11 +292,12 @@ export default function FeedClient({
         data-product-id={id}
         layoutId={`asset-card-layout-${asset.id}`}
         onClick={() => openProduct(asset)}
-        className="group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate border border-blue-500/40 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(37,99,235,0.25)]"
+        className={borderClass}
         style={{
           backgroundColor: theme.bg.startsWith("http") ? "#13192b" : theme.bg,
           backgroundImage: theme.bg.startsWith("http") ? `url(${theme.bg})` : undefined,
           backgroundSize: "cover",
+          ...borderStyle,
         }}
       >
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
