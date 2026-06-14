@@ -14,6 +14,11 @@ import { Search, Compass, Eye, ThumbsUp, Flame } from "lucide-react";
 import ProductModal from "./ProductModal";
 import AuthModal from "./AuthModal";
 import RobloxVerifyModal from "./RobloxVerifyModal";
+import {
+  ProductCustomization,
+  getProductCardTheme,
+  themedBackgroundStyle,
+} from "@/lib/productCardTheme";
 
 type FeedProduct = {
   id: number | string;
@@ -28,37 +33,9 @@ type FeedProduct = {
   profiles?: { username?: string; avatar_url?: string } | null;
   product_analytics?: { views?: number; clicks?: number; likes?: number } | null;
   product_monetization?: { promoted?: boolean; promoted_until?: string | null } | null;
-  product_customization?: {
-    title_color?: string;
-    description_color?: string;
-    bg_color_or_image?: string;
-    bg_image_storage_url?: string | null;
-    border_style?: string | null;
-    border_color?: string | null;
-    border_width?: number | null;
-  } | null;
-  styles?: Record<string, string>;
+  product_customization?: ProductCustomization | ProductCustomization[] | null;
+  styles?: Record<string, string | number | boolean | null | undefined> | null;
 };
-
-function cardTheme(asset: FeedProduct) {
-  const c = asset.product_customization;
-  const s = asset.styles ?? {};
-  const borderColor = c?.border_color || (s.borderColor as string) || null;
-  const borderWidth = c?.border_width || null;
-  const hasBorder = !!(borderColor && borderWidth);
-  return {
-    bg:
-      c?.bg_image_storage_url ||
-      c?.bg_color_or_image ||
-      (s.bgColor as string) ||
-      "#13192b",
-    titleColor: c?.title_color || (s.titleColor as string) || "#FFFFFF",
-    descColor: c?.description_color || (s.descriptionColor as string) || "#94A3B8",
-    borderColor,
-    borderWidth,
-    hasBorder,
-  };
-}
 
 const GRID_CLASS =
   "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6";
@@ -266,21 +243,13 @@ export default function FeedClient({
     }
 
     const hasLiked = likedIds.has(id);
-    const theme = cardTheme(asset);
+    const theme = getProductCardTheme(asset);
     const promoted = isProductPromoted(asset);
     const isFree = (asset.price ?? 0) === 0;
 
     const likes = asset.product_analytics?.likes || 0;
     const clicks = asset.product_analytics?.clicks || 1; // avoid division by zero
     const isGoated = likes >= 5 && (likes / clicks) > 0.05;
-
-    // Dynamic border: use custom border if set, else default blue
-    const borderStyle = theme.hasBorder
-      ? { border: `${theme.borderWidth}px solid ${theme.borderColor}` }
-      : {};
-    const borderClass = theme.hasBorder
-      ? "group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate"
-      : "group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate border border-blue-500/40 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(37,99,235,0.25)]";
 
     return (
       <motion.div
@@ -292,12 +261,10 @@ export default function FeedClient({
         data-product-id={id}
         layoutId={`asset-card-layout-${asset.id}`}
         onClick={() => openProduct(asset)}
-        className={borderClass}
+        className="group rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col relative select-none isolate hover:shadow-[0_0_25px_rgba(37,99,235,0.25)]"
         style={{
-          backgroundColor: theme.bg.startsWith("http") ? "#13192b" : theme.bg,
-          backgroundImage: theme.bg.startsWith("http") ? `url(${theme.bg})` : undefined,
-          backgroundSize: "cover",
-          ...borderStyle,
+          ...themedBackgroundStyle(theme.bg),
+          border: `${theme.borderWidth}px solid ${theme.borderColor}`,
         }}
       >
         <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
@@ -329,13 +296,13 @@ export default function FeedClient({
         <div className="p-4 space-y-3 relative z-10 flex-grow flex flex-col justify-between bg-[#111625]/90 border-t border-slate-800">
           <div className="space-y-1">
             <h3
-              className="text-sm font-bold truncate font-sans"
+              className={`text-sm font-bold truncate ${theme.titleFont}`}
               style={{ color: theme.titleColor }}
             >
               {asset.title}
             </h3>
             <p
-              className="text-xs line-clamp-2 leading-relaxed pr-6 md:pr-8"
+              className={`text-xs line-clamp-2 leading-relaxed pr-6 md:pr-8 ${theme.descFont}`}
               style={{ color: theme.descColor }}
             >
               {asset.description || "No description provided."}

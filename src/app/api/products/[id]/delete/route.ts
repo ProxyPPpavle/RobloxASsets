@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { removeProductStorageFiles } from "@/lib/removeProductStorage";
+import { revalidateTag } from "next/cache";
 
 export async function DELETE(
   _req: NextRequest,
@@ -59,6 +60,8 @@ export async function DELETE(
     if (deleteError) {
       return NextResponse.json({ success: false, error: deleteError.message }, { status: 400 });
     }
+
+    revalidateTag("feed-products", { expire: 0 });
 
     return NextResponse.json({
       success: true,

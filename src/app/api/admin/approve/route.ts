@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { fetchRobloxPriceFromLink } from "@/lib/roblox";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -67,6 +68,8 @@ export async function POST(req: NextRequest) {
           : `Your product "${product.title}" is now live on the marketplace.`,
       is_read: false,
     });
+
+    revalidateTag("feed-products", { expire: 0 });
 
     return NextResponse.json({
       success: true,

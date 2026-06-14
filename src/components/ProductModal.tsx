@@ -15,6 +15,11 @@ import {
   Flame,
 } from "lucide-react";
 import { isProductPromoted } from "@/lib/feedSort";
+import {
+  ProductCustomization,
+  getProductCardTheme,
+  themedBackgroundStyle,
+} from "@/lib/productCardTheme";
 
 export default function ProductModal({
   product,
@@ -35,6 +40,8 @@ export default function ProductModal({
     profiles?: { username?: string } | null;
     product_analytics?: { views?: number; clicks?: number; likes?: number } | null;
     product_monetization?: { promoted?: boolean; promoted_until?: string | null } | null;
+    product_customization?: ProductCustomization | ProductCustomization[] | null;
+    styles?: Record<string, string | number | boolean | null | undefined> | null;
   };
   onClose: () => void;
   userId?: string | null;
@@ -48,6 +55,7 @@ export default function ProductModal({
   const [checkingOwnership, setCheckingOwnership] = useState(false);
 
   const isFree = (product.price ?? 0) === 0;
+  const theme = getProductCardTheme(product);
 
   const trackClick = () => {
     trackProductClickDebounced(product.id);
@@ -135,9 +143,13 @@ export default function ProductModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-3xl bg-[#13192b] border border-blue-500/40 rounded-2xl overflow-hidden shadow-[0_0_35px_rgba(37,99,235,0.2)] my-8 grid grid-cols-1 md:grid-cols-12 text-gray-200"
+        className="w-full max-w-3xl rounded-2xl overflow-hidden shadow-[0_0_35px_rgba(37,99,235,0.2)] my-8 grid grid-cols-1 md:grid-cols-12 text-gray-200"
+        style={{
+          ...themedBackgroundStyle(theme.bg),
+          border: `${theme.borderWidth}px solid ${theme.borderColor}`,
+        }}
       >
-        <div className="md:col-span-7 min-h-[360px] md:min-h-[480px] h-full relative overflow-hidden flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-slate-800 bg-[#13192b]">
+        <div className="md:col-span-7 min-h-[360px] md:min-h-[480px] h-full relative overflow-hidden flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-slate-800 bg-black/20">
           <div className="relative z-10 flex items-center justify-between pb-2">
             <div className="flex items-center gap-2">
               <span className="text-[9px] bg-black/80 backdrop-blur-md border border-white/10 text-cyan-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">
@@ -152,7 +164,10 @@ export default function ProductModal({
           </div>
 
           <div className="my-auto py-3 relative z-10 w-full flex items-center justify-center">
-            <div className="w-full max-h-[290px] rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)] relative border border-blue-500/40">
+            <div
+              className="w-full max-h-[290px] rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)] relative"
+              style={{ border: `${Math.max(1, theme.borderWidth)}px solid ${theme.borderColor}` }}
+            >
               <img
                 src={product.image_url}
                 alt={product.title}
@@ -197,7 +212,7 @@ export default function ProductModal({
           </div>
         </div>
 
-        <div className="md:col-span-5 p-6 flex flex-col justify-between space-y-6 bg-[#111625]">
+        <div className="md:col-span-5 p-6 flex flex-col justify-between space-y-6 bg-[#111625]/95">
           <div className="space-y-5">
             <div className="flex items-center justify-between pb-3.5 border-b border-slate-800">
               <div className="flex items-center gap-2">
@@ -221,10 +236,16 @@ export default function ProductModal({
             </div>
 
             <div className="space-y-3">
-              <h1 className="text-lg font-display font-black tracking-tight text-white leading-tight">
+              <h1
+                className={`text-lg font-black tracking-tight leading-tight ${theme.titleFont}`}
+                style={{ color: theme.titleColor }}
+              >
                 {product.title}
               </h1>
-              <p className="text-xs text-gray-300 leading-relaxed max-h-[180px] overflow-y-auto pr-1">
+              <p
+                className={`text-xs leading-relaxed max-h-[180px] overflow-y-auto pr-1 ${theme.descFont}`}
+                style={{ color: theme.descColor }}
+              >
                 {product.description || "No description provided."}
               </p>
             </div>

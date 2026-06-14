@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { removeProductStorageFiles } from "@/lib/removeProductStorage";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -71,6 +72,8 @@ export async function POST(req: NextRequest) {
     if (notifError) {
       console.error("Failed to insert notification:", notifError);
     }
+
+    revalidateTag("feed-products", { expire: 0 });
 
     return NextResponse.json({ success: true, message: "Product rejected and notification sent" });
   } catch (err: any) {

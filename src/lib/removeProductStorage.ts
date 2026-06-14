@@ -1,12 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
 import { storagePathsFromProductUrls } from "@/lib/storagePaths";
-
-function createServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key, { auth: { persistSession: false } });
-}
+import { createServiceClient } from "@/utils/supabase/service";
 
 /** Deletes product files from shop-assets (requires SUPABASE_SERVICE_ROLE_KEY) */
 export async function removeProductStorageFiles(

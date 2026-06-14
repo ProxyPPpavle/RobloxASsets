@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import { createServiceClient } from '@/utils/supabase/service'
 import { parseGamepassId } from '@/lib/roblox'
+import { revalidateTag } from 'next/cache'
+
+type ProductStyles = Record<string, string | number | boolean | null | undefined>;
+
+function fileFromDataUrl(dataUrl?: string | null) {
+    if (!dataUrl?.startsWith('data:')) return null;
+
+    const match = dataUrl.match(/^data:([^;,]+)(;base64)?,(.*)$/);
+    if (!match) return null;
+
+    const mimeType = match[1] || 'application/octet-stream';
+    const isBase64 = !!match[2];
+    const payload = match[3] || '';
+    const buffer = isBase64
+        ? Buffer.from(payload, 'base64')
+        : Buffer.from(decodeURIComponent(payload), 'utf8');
+    const extension = mimeType.split('/')[1]?.split('+')[0] || 'bin';
+
+    return { buffer, mimeType, extension };
+}
 
 export async function GET() {
     const supabase = await createClient();
@@ -24,7 +45,7 @@ export async function POST(req: NextRequest) {
         const robloxLink = isFree ? null : (formData.get('robloxLink') as string);
         const category = formData.get('category') as string || 'Model';
         const stylesJson = formData.get('styles') as string;
-        let styles = {};
+        let styles: ProductStyles = {};
         if (stylesJson) {
             try { styles = JSON.parse(stylesJson); } catch(e) {}
         }
@@ -84,6 +105,31 @@ export async function POST(req: NextRequest) {
         const imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/shop-assets/images/${imageName}`;
         const fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/shop-assets/files/${fileName}`;
 
+        const stylesToPersist: ProductStyles = { ...styles };
+        let bgImageStorageUrl =
+            typeof styles.bgImage === 'string' && !styles.bgImage.startsWith('data:')
+                ? styles.bgImage
+                : null;
+
+        const bgImageFile = fileFromDataUrl(typeof styles.bgImage === 'string' ? styles.bgImage : null);
+        if (bgImageFile) {
+            const bgImageName = `${crypto.randomUUID()}.${bgImageFile.extension}`;
+            const bgImagePath = `backgrounds/${bgImageName}`;
+            const { error: bgImageErr } = await supabase.storage
+                .from('shop-assets')
+                .upload(bgImagePath, bgImageFile.buffer, {
+                    contentType: bgImageFile.mimeType,
+                    upsert: true,
+                });
+
+            if (bgImageErr) {
+                return NextResponse.json({ success: false, error: 'Background image upload error: ' + bgImageErr.message }, { status: 400 });
+            }
+
+            bgImageStorageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/shop-assets/${bgImagePath}`;
+            stylesToPersist.bgImage = bgImageStorageUrl;
+        }
+
         // 4. Upis u bazu
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         
@@ -92,7 +138,10 @@ export async function POST(req: NextRequest) {
         }
         const sellerId = user.id;
 
-        const { data, error: dbErr } = await supabase
+        const admin = createServiceClient();
+        const db = admin ?? supabase;
+
+        const { data, error: dbErr } = await db
             .from('products')
             .insert([
                 {
@@ -101,7 +150,7 @@ export async function POST(req: NextRequest) {
                     price: pravaCena,
                     gamepass_link: isFree ? null : robloxLink,
                     category,
-                    styles,
+                    styles: stylesToPersist,
                     image_url: imageUrl,
                     file_url: fileUrl,
                     seller_id: sellerId,
@@ -114,24 +163,30 @@ export async function POST(req: NextRequest) {
         }
 
         const inserted = data?.[0];
-        if (inserted?.id && styles && typeof styles === 'object') {
-            const s = styles as Record<string, string | number | boolean | undefined>;
-            await supabase
+        if (inserted?.id) {
+            const { error: customizationErr } = await db
                 .from('product_customization')
                 .upsert({
                     product_id: inserted.id,
-                    bg_color_or_image: (s.bgColor as string) || '#13192b',
-                    title_color: (s.titleColor as string) || '#ffffff',
-                    description_color: (s.descriptionColor as string) || '#94A3B8',
-                    title_font: (s.titleFont as string) || 'default',
-                    description_font: (s.descriptionFont as string) || 'default',
-                    border_style: (s.frameStyle as string) || 'none',
-                    border_color: (s.borderColor as string) || '#3b82f6',
-                    border_width: typeof s.borderWidth === 'number' ? s.borderWidth : 1.5,
+                    bg_color_or_image: (stylesToPersist.bgColor as string) || '#13192b',
+                    title_color: (stylesToPersist.titleColor as string) || '#ffffff',
+                    description_color: (stylesToPersist.descriptionColor as string) || '#94A3B8',
+                    title_font: (stylesToPersist.titleFont as string) || 'font-sans',
+                    description_font: (stylesToPersist.descriptionFont as string) || 'font-sans',
+                    border_style: (stylesToPersist.frameStyle as string) || 'solid',
+                    border_color: (stylesToPersist.borderColor as string) || '#3b82f6',
+                    border_width: typeof stylesToPersist.borderWidth === 'number' ? stylesToPersist.borderWidth : 1.5,
                     niche_type: category,
-                    bg_image_storage_url: (s.bgImage as string) || null,
+                    bg_image_storage_url: bgImageStorageUrl,
                 }, { onConflict: 'product_id' });
+
+            if (customizationErr) {
+                await db.from('products').delete().eq('id', inserted.id);
+                return NextResponse.json({ success: false, error: 'Customization insert error: ' + customizationErr.message }, { status: 400 });
+            }
         }
+
+        revalidateTag('feed-products', { expire: 0 });
 
         return NextResponse.json({ 
             success: true, 
