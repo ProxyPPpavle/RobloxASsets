@@ -32,9 +32,7 @@ export default async function Home() {
             description_font,
             bg_color_or_image,
             bg_image_storage_url,
-            border_style,
-            border_color,
-            border_width
+            border_style
           )
         `
         )

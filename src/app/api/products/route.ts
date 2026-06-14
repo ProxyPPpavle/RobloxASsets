@@ -174,8 +174,6 @@ export async function POST(req: NextRequest) {
                     title_font: (stylesToPersist.titleFont as string) || 'font-sans',
                     description_font: (stylesToPersist.descriptionFont as string) || 'font-sans',
                     border_style: (stylesToPersist.frameStyle as string) || 'solid',
-                    border_color: (stylesToPersist.borderColor as string) || '#3b82f6',
-                    border_width: typeof stylesToPersist.borderWidth === 'number' ? stylesToPersist.borderWidth : 1.5,
                     niche_type: category,
                     bg_image_storage_url: bgImageStorageUrl,
                 }, { onConflict: 'product_id' });
