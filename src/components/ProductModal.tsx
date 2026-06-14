@@ -135,9 +135,9 @@ export default function ProductModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-3xl bg-[#090C15] border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_35px_rgba(0,0,0,0.9)] my-8 grid grid-cols-1 md:grid-cols-12 text-gray-200"
+        className="w-full max-w-3xl bg-[#13192b] border border-blue-500/40 rounded-2xl overflow-hidden shadow-[0_0_35px_rgba(37,99,235,0.2)] my-8 grid grid-cols-1 md:grid-cols-12 text-gray-200"
       >
-        <div className="md:col-span-7 min-h-[360px] md:min-h-[480px] h-full relative overflow-hidden flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-white/10 bg-[#13192b]">
+        <div className="md:col-span-7 min-h-[360px] md:min-h-[480px] h-full relative overflow-hidden flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-slate-800 bg-[#13192b]">
           <div className="relative z-10 flex items-center justify-between pb-2">
             <div className="flex items-center gap-2">
               <span className="text-[9px] bg-black/80 backdrop-blur-md border border-white/10 text-cyan-400 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">
@@ -152,7 +152,7 @@ export default function ProductModal({
           </div>
 
           <div className="my-auto py-3 relative z-10 w-full flex items-center justify-center">
-            <div className="w-full max-h-[290px] rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)] relative border border-white/10">
+            <div className="w-full max-h-[290px] rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)] relative border border-blue-500/40">
               <img
                 src={product.image_url}
                 alt={product.title}
@@ -197,9 +197,9 @@ export default function ProductModal({
           </div>
         </div>
 
-        <div className="md:col-span-5 p-6 flex flex-col justify-between space-y-6 bg-[#0B0D14]">
+        <div className="md:col-span-5 p-6 flex flex-col justify-between space-y-6 bg-[#111625]">
           <div className="space-y-5">
-            <div className="flex items-center justify-between pb-3.5 border-b border-white/5">
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-[11px] font-mono font-extrabold text-white">
                   {(product.profiles?.username || "dev").substring(0, 2).toUpperCase()}
@@ -230,7 +230,7 @@ export default function ProductModal({
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/10">
+          <div className="pt-4 border-t border-slate-800">
             {isFree ? (
               <button
                 type="button"
