@@ -154,29 +154,8 @@ export default function FeedClient({
       sortDirection
     );
 
-    const interleave = (assets: FeedProduct[]) => {
-      const newest = [...assets].sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      const popular = [...assets].sort((a,b) => (b.product_analytics?.likes || 0) - (a.product_analytics?.likes || 0));
-      const res: FeedProduct[] = [];
-      const used = new Set<string>();
-      let nIdx = 0; let pIdx = 0;
-      while(used.size < assets.length) {
-        let addedN = 0;
-        while(addedN < 2 && nIdx < newest.length) {
-          const p = newest[nIdx++];
-          if(!used.has(String(p.id))) { res.push(p); used.add(String(p.id)); addedN++; }
-        }
-        let addedP = 0;
-        while(addedP < 2 && pIdx < popular.length) {
-          const p = popular[pIdx++];
-          if(!used.has(String(p.id))) { res.push(p); used.add(String(p.id)); addedP++; }
-        }
-      }
-      return res;
-    };
-
-    const regMixed = interleave(regular);
-    const proMixed = interleave(promoted);
+    const regMixed = regular;
+    const proMixed = promoted;
 
     const feed: FeedProduct[] = [];
     let r = 0; let p = 0;

@@ -11,7 +11,7 @@ export default function SiteFooter() {
               <img 
                 src="/LogoAssetsPP.png" 
                 alt="AssetsPP Logo" 
-                className="w-10 h-10 md:w-11 md:h-11 object-contain drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" 
+                className="w-12 h-12 md:w-14 md:h-14 object-contain [filter:drop-shadow(0_4px_14px_rgba(15,23,42,0.55))_drop-shadow(0_0_12px_rgba(59,130,246,0.45))]" 
               />
               <span className="text-lg font-bold text-white tracking-tight">
                 Assets<span className="text-blue-500 font-extrabold">PP</span>
