@@ -27,14 +27,22 @@ export default function Navbar({ user }: { user: User | null; role?: string }) {
         </Link>
 
         {!user && (
-          <button
-            type="button"
-            onClick={() => setAuthModalOpen(true)}
-            className="pointer-events-auto text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer ml-1"
-          >
-            <LogIn className="w-3.5 h-3.5" />
-            Sign In
-          </button>
+          <div className="flex items-center gap-2 pointer-events-auto ml-1">
+            <button
+              type="button"
+              onClick={() => setAuthModalOpen(true)}
+              className="text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Sign In
+            </button>
+            <a
+              href="/api/roblox/auth?next=/"
+              className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
+            >
+              CONTINUE WITH ROBLOX OAUTH
+            </a>
+          </div>
         )}
       </header>
 

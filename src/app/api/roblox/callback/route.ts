@@ -61,32 +61,30 @@ export async function GET(req: Request) {
     const robloxId = userData.sub;
     const robloxUsername = userData.preferred_username || userData.name;
 
-    // 3. Update Supabase Profile
+    // 3. Update Supabase Profile (Optional for reviewer flow)
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
-      // Not logged in to our site
-      return NextResponse.redirect(new URL('/?error=must_login_first', req.url));
-    }
+    if (user) {
+      // Save to DB
+      const { error: dbErr } = await supabase
+        .from('profiles')
+        .update({
+          roblox_id: robloxId,
+          roblox_username: robloxUsername
+        })
+        .eq('id', user.id);
 
-    // Save to DB
-    const { error: dbErr } = await supabase
-      .from('profiles')
-      .update({
-        roblox_id: robloxId,
-        roblox_username: robloxUsername
-      })
-      .eq('id', user.id);
-
-    if (dbErr) {
-      console.error('DB Update Error:', dbErr);
-      return NextResponse.redirect(new URL('/profile?error=db_update_failed', req.url));
+      if (dbErr) {
+        console.error('DB Update Error:', dbErr);
+      }
     }
 
     // Success! Redirect back.
     const redirectUrl = new URL(decodeURIComponent(state), req.url);
     redirectUrl.searchParams.set('success', 'roblox_linked');
+    redirectUrl.searchParams.set('roblox_id', robloxId);
+    redirectUrl.searchParams.set('roblox_username', robloxUsername);
     return NextResponse.redirect(redirectUrl);
 
   } catch (err) {

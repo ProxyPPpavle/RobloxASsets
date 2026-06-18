@@ -63,6 +63,24 @@ export default function FeedClient({
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
+  const [showReviewerModal, setShowReviewerModal] = useState(false);
+  const [reviewerData, setReviewerData] = useState({ id: "", username: "" });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const success = params.get("success");
+      const robloxId = params.get("roblox_id");
+      const robloxUsername = params.get("roblox_username");
+      if (success === "roblox_linked" && robloxId && robloxUsername) {
+        setReviewerData({ id: robloxId, username: robloxUsername });
+        setShowReviewerModal(true);
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, []);
+
   const bumpAnalytics = useCallback(
     (id: string | number, field: "views" | "clicks") => {
       setLocalProducts((prev) =>
@@ -348,6 +366,23 @@ export default function FeedClient({
         </p>
       </div>
 
+      {/* Temporary Roblox Reviewers Banner */}
+      <div className="max-w-2xl mx-auto p-5 bg-sky-950/40 border border-sky-550/40 rounded-2xl flex flex-col items-center justify-center text-center gap-3 shadow-[0_0_20px_rgba(14,165,233,0.15)]">
+        <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+          Roblox Reviewers: Click here to test OAuth immediately
+        </span>
+        <p className="text-xs text-slate-350 font-sans max-w-md">
+          Use the button below to immediately test the Roblox OAuth integration. You do not need to register or verify an email.
+        </p>
+        <a
+          href="/api/roblox/auth?next=/"
+          className="text-xs font-sans text-white font-extrabold bg-sky-500 hover:bg-sky-600 px-6 py-2.5 rounded-xl transition duration-150 active:scale-95 shadow-[0_4px_14px_rgba(14,165,233,0.4)]"
+        >
+          CONTINUE WITH ROBLOX OAUTH
+        </a>
+      </div>
+
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="relative shadow-[0_4px_25px_rgba(0,0,0,0.4)] rounded-2xl">
           <input
@@ -449,6 +484,32 @@ export default function FeedClient({
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
       {showRobloxVerify && <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />}
+
+      {showReviewerModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+          <div className="bg-[#090c15] border border-blue-500/40 rounded-2xl p-8 max-w-md w-full text-center shadow-[0_0_40px_rgba(59,130,246,0.35)] relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500" />
+            <h2 className="text-xl font-display font-black text-white mb-4 tracking-tight">Roblox Verification Success</h2>
+            <div className="bg-[#101524] border border-slate-800 rounded-xl p-4 mb-6 space-y-2 text-left font-mono text-xs text-slate-300">
+              <div>
+                <span className="text-slate-500">ID:</span> <span className="text-blue-400 font-extrabold">{reviewerData.id}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Username:</span> <span className="text-sky-400 font-extrabold">{reviewerData.username}</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 mb-6 leading-relaxed font-sans">
+              Roblox OAuth completed successfully. Your Roblox account attributes have been processed.
+            </p>
+            <button
+              onClick={() => setShowReviewerModal(false)}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition duration-150 active:scale-95 shadow-[0_4px_14px_rgba(37,99,235,0.4)] cursor-pointer"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
