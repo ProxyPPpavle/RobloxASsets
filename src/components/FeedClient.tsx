@@ -54,7 +54,7 @@ export default function FeedClient({
   const [sortBy, setSortBy] = useState<"newest" | "top" | "free" | "paid">("newest");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [selectedProduct, setSelectedProduct] = useState<FeedProduct | null>(null);
-  const [authOpen, setAuthOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(!userId);
   const [showRobloxVerify, setShowRobloxVerify] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<string>>(
     () => new Set(initialLikedIds.map(String))
