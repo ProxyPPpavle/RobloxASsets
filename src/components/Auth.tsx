@@ -152,6 +152,22 @@ export default function Auth() {
           </button>
         </form>
       )}
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 my-5">
+        <div className="flex-1 h-px bg-[#30363d]" />
+        <span className="text-xs text-[#8b949e] font-bold uppercase tracking-wider">or</span>
+        <div className="flex-1 h-px bg-[#30363d]" />
+      </div>
+
+      {/* Roblox OAuth Button */}
+      <a
+        href="/api/roblox/auth?next=/"
+        className="w-full flex items-center justify-center gap-2.5 bg-[#0d1117] hover:bg-[#161b22] border border-[#30363d] hover:border-[#58a6ff] text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg group"
+      >
+        <img src="https://images.rbxcdn.com/0dfc5107ad5e36a7da04bfb1c8cae6d1" alt="Roblox" className="w-5 h-5 object-contain" />
+        <span className="text-sm">Continue with Roblox</span>
+      </a>
     </div>
   );
 }

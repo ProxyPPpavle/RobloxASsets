@@ -366,23 +366,6 @@ export default function FeedClient({
         </p>
       </div>
 
-      {/* Temporary Roblox Reviewers Banner */}
-      <div className="max-w-2xl mx-auto p-5 bg-sky-950/40 border border-sky-550/40 rounded-2xl flex flex-col items-center justify-center text-center gap-3 shadow-[0_0_20px_rgba(14,165,233,0.15)]">
-        <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-widest flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-          Roblox Reviewers: Click here to test OAuth immediately
-        </span>
-        <p className="text-xs text-slate-350 font-sans max-w-md">
-          Use the button below to immediately test the Roblox OAuth integration. You do not need to register or verify an email.
-        </p>
-        <a
-          href="/api/roblox/auth?next=/"
-          className="text-xs font-sans text-white font-extrabold bg-sky-500 hover:bg-sky-600 px-6 py-2.5 rounded-xl transition duration-150 active:scale-95 shadow-[0_4px_14px_rgba(14,165,233,0.4)]"
-        >
-          CONTINUE WITH ROBLOX OAUTH
-        </a>
-      </div>
-
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="relative shadow-[0_4px_25px_rgba(0,0,0,0.4)] rounded-2xl">
           <input
