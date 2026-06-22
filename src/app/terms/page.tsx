@@ -30,7 +30,22 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">3. Contact</h2>
+            <h2 className="text-xl font-bold text-white mb-2">3. Roblox OAuth 2.0 Integration</h2>
+            <p>AssetsPP uses Roblox's official OAuth 2.0 API for identity verification and seamless login. By linking your Roblox account, you acknowledge that:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li>We only request and access your <strong>public profile information</strong> (specifically your Username and User ID) via the official `openid` and `profile` scopes.</li>
+              <li><strong>We NEVER see, request, or store your Roblox password.</strong> All authentication happens securely on Roblox's official servers.</li>
+              <li>You may revoke our application's access at any time through your Roblox account settings.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-2">4. Disclaimer</h2>
+            <p><strong>AssetsPP is an independent platform.</strong> We are NOT affiliated with, endorsed by, sponsored by, or officially associated with Roblox Corporation in any way. The term "Roblox" and related logos are trademarks of Roblox Corporation.</p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-2">5. Contact</h2>
             <p>If you have any questions or concerns regarding these terms, please contact us at: <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline">assetsppteam@gmail.com</a></p>
           </section>
         </div>

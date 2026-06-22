@@ -14,32 +14,43 @@ export default function PrivacyPage() {
         <div className="space-y-6 text-sm leading-relaxed text-gray-300">
           <section>
             <h2 className="text-xl font-bold text-white mb-2">1. Data Collection</h2>
-            <p>We only collect the absolute minimum data required for the platform to function securely. The only private (and public) information we require for registration and verification are:</p>
+            <p>We only collect the absolute minimum data required for the platform to function securely. Specifically, we collect:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Your Email Address (for authentication).</li>
-              <li>Your Public Roblox Client ID and Username (for verifying purchases).</li>
+              <li><strong>Email Address:</strong> If provided, used for authentication via secure One-Time Passwords (OTP).</li>
+              <li><strong>Roblox Public Profile Data:</strong> When you log in via Roblox OAuth, we securely receive your public Roblox User ID and Username.</li>
+              <li><strong>Platform Activity:</strong> Information regarding assets you upload, purchase, or interact with on the AssetsPP marketplace.</li>
             </ul>
-            <p className="mt-2">We do not use passwords. We use secure OTP (One-Time Passwords) via email.</p>
+            <p className="mt-2 text-blue-400 font-semibold">We do not use passwords. We use secure OTP via email and official Roblox OAuth 2.0 verification.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">2. How We Use Your Data</h2>
-            <p>Your data is used exclusively on this platform to manage your account, verify your Roblox identity, and process transactions. We do not sell, share, or use your data anywhere else.</p>
+            <p>Your data is used strictly and exclusively for operating the AssetsPP marketplace:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li>To manage and secure your account.</li>
+              <li>To authenticate your identity via Roblox OAuth.</li>
+              <li>To process your asset transactions, uploads, and purchases.</li>
+            </ul>
+            <p className="mt-2 font-semibold">We NEVER sell, rent, or share your data with third parties or use it anywhere outside this platform.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">3. Platform Access</h2>
-            <p>Users can freely browse and access the platform without logging in. Logging in is only necessary if you intend to perform transactions or upload assets.</p>
+            <p>Users can freely browse and access the platform without logging in. Logging in is only necessary if you intend to perform transactions, upload assets, or interact with features requiring a verified identity.</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">4. Data Deletion</h2>
-            <p>You have full control over your data. You can completely delete your account and all associated data at any time by clicking the trash can icon at the top of your profile page.</p>
+            <h2 className="text-xl font-bold text-white mb-2">4. Data Deletion Request (Right to be Forgotten)</h2>
+            <p>You have absolute control over your personal data and the right to request full erasure at any time.</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1">
+              <li><strong>Manual Deletion:</strong> You can completely delete your account and all associated data at any time by clicking the trash can icon at the top of your profile page.</li>
+              <li><strong>Email Request:</strong> You may also formally request full data erasure by emailing us directly at <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline font-semibold">assetsppteam@gmail.com</a>. We process all manual deletion requests strictly within 48 hours.</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">5. Contact</h2>
-            <p>If you have any questions regarding your privacy, please contact us at: <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline">assetsppteam@gmail.com</a></p>
+            <p>If you have any questions regarding your privacy, data safety, or wish to exercise your data rights, please contact us at: <a href="mailto:assetsppteam@gmail.com" className="text-blue-400 hover:underline">assetsppteam@gmail.com</a></p>
           </section>
         </div>
       </div>
