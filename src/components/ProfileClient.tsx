@@ -124,8 +124,10 @@ export default function ProfileClient({
                 <h2 className="text-xl font-extrabold text-white">{displayName}</h2>
                 <p className="text-sm text-slate-400">@{displayName}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{email}</p>
-                <span className="text-[10px] text-slate-400 bg-slate-950/60 px-2.5 py-0.5 rounded-full mt-1.5 inline-block border border-slate-800">
-                  Member since {memberSince}
+                <span className="text-[10px] text-slate-400 bg-slate-950/60 px-2.5 py-0.5 rounded-full mt-1.5 inline-block border border-slate-800">Member since {memberSince}
+{profile.roblox_id && (
+  <span className="ml-2 inline-block bg-green-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">You are all set</span>
+)}
                 </span>
               </div>
             </div>
