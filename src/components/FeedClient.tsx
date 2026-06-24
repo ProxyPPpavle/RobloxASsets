@@ -297,6 +297,11 @@ export default function FeedClient({
             >
               {asset.title}
             </h3>
+            {asset.profiles?.username && (
+              <p className="text-[10px] text-slate-500 font-mono">
+                @{asset.profiles.username}
+              </p>
+            )}
             <p
               className={`text-xs line-clamp-2 leading-relaxed pr-6 md:pr-8 ${theme.descFont}`}
               style={{ color: theme.descColor }}

@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import AuthModal from "./AuthModal";
-import { LogIn } from "lucide-react";
+import { LogIn, User as UserIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar({ user }: { user: User | null }) {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [clientUser, setClientUser] = useState<User | null>(user);
   const [robloxId, setRobloxId] = useState<string | null>(null);
+  // isLoading starts true so we never flash buttons before auth is known
+  const [isLoading, setIsLoading] = useState(!user);
 
   useEffect(() => {
     const supabase = createClient();
@@ -30,11 +32,15 @@ export default function Navbar({ user }: { user: User | null }) {
 
     if (user) {
       setClientUser(user);
-      fetchRobloxId(user.id);
+      fetchRobloxId(user.id).finally(() => setIsLoading(false));
     } else {
       supabase.auth.getUser().then(({ data }) => {
         setClientUser(data.user);
-        if (data.user) fetchRobloxId(data.user.id);
+        if (data.user) {
+          fetchRobloxId(data.user.id).finally(() => setIsLoading(false));
+        } else {
+          setIsLoading(false);
+        }
       });
     }
   }, [user]);
@@ -58,54 +64,43 @@ export default function Navbar({ user }: { user: User | null }) {
           </span>
         </Link>
 
-        {clientUser ? (
+        {/* Don't render anything until auth state is resolved — prevents button flash */}
+        {!isLoading && (
           <>
-            <Link
-              href="/profile"
-              className="ml-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-sm text-white hover:bg-slate-700 transition-colors pointer-events-auto"
-            >
-              <span className="font-medium">
-                {clientUser.email?.split("@")[0] ?? "Profile"}
-              </span>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </Link>
-            {allSet && (
-              <span className="text-xs font-medium text-green-400 bg-green-900/30 rounded-md px-2 py-1 pointer-events-auto">
-                ✓ All set
-              </span>
+            {clientUser ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="ml-2 flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors pointer-events-auto"
+                  title="Profile"
+                >
+                  <UserIcon className="w-4 h-4 text-white" />
+                </Link>
+                {allSet && (
+                  <span className="text-xs font-medium text-green-400 bg-green-900/30 rounded-md px-2 py-1 pointer-events-auto">
+                    ✓ All set
+                  </span>
+                )}
+              </>
+            ) : (
+              <div className="flex items-center gap-2 pointer-events-auto ml-1">
+                <button
+                  type="button"
+                  onClick={() => setAuthModalOpen(true)}
+                  className="text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Sign In
+                </button>
+                <a
+                  href="/api/roblox/auth?next=/"
+                  className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  CONTINUE WITH ROBLOX
+                </a>
+              </div>
             )}
           </>
-
-        ) : (
-          <div className="flex items-center gap-2 pointer-events-auto ml-1">
-            <button
-              type="button"
-              onClick={() => setAuthModalOpen(true)}
-              className="text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              Sign In
-            </button>
-            <a
-              href="/api/roblox/auth?next=/"
-              className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
-            >
-              CONTINUE WITH ROBLOX
-            </a>
-          </div>
         )}
       </header>
 

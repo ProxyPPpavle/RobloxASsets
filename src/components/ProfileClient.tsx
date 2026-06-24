@@ -18,7 +18,6 @@ import { createClient } from "@/utils/supabase/client";
 import EditProfileButton from "./EditProfileButton";
 import DeleteProductButton from "./DeleteProductButton";
 import DeleteNotificationButton from "./DeleteNotificationButton";
-import RobloxVerifyModal from "@/components/RobloxVerifyModal";
 import PromoteModal from "./PromoteModal";
 import { isProductPromoted } from "@/lib/feedSort";
 
@@ -56,8 +55,6 @@ export default function ProfileClient({
 }) {
   const [products, setProducts] = useState(initialProducts);
   const [notifications, setNotifications] = useState(initialNotifications);
-  const [showRobloxVerify, setShowRobloxVerify] = useState(false);
-
   const [downloadedIds, setDownloadedIds] = useState<Set<number>>(new Set());
   const [promoteTarget, setPromoteTarget] = useState<{
     id: number;
@@ -133,15 +130,6 @@ export default function ProfileClient({
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
                <EditProfileButton currentUsername={displayName} />
-               {profile.roblox_id ? null : (
-                <button
-                  type="button"
-                  onClick={() => setShowRobloxVerify(true)}
-                  className="text-xs font-sans font-bold text-white bg-[#58a6ff] hover:bg-[#3182ce] py-2 px-4 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-lg"
-                >
-                  Verify Roblox
-                </button>
-              )}
             </div>
           </div>
 
@@ -384,9 +372,6 @@ export default function ProfileClient({
             );
           }}
         />
-      )}
-      {showRobloxVerify && (
-        <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />
       )}
     </div>
   );
