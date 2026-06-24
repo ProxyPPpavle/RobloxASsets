@@ -7,6 +7,7 @@ import AdminActionButtons from "@/components/AdminActionButtons";
 import AdminPriceBadge from "@/components/AdminPriceBadge";
 import { ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { verifyAdminRole } from "./actions";
 
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "pp";
 
@@ -27,12 +28,8 @@ export default function AdminDashboard() {
 
       if (sessionStorage.getItem("admin_auth") === "true") {
         if (session?.user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", session.user.id)
-            .single();
-          if (profile?.role === "admin") {
+          const isAdmin = await verifyAdminRole();
+          if (isAdmin) {
             setIsAuthenticated(true);
             return;
           }
@@ -69,13 +66,9 @@ export default function AdminDashboard() {
     }
     
     if (password === ADMIN_PASSWORD) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
+      const isAdmin = await verifyAdminRole();
         
-      if (profile?.role === "admin") {
+      if (isAdmin) {
         sessionStorage.setItem("admin_auth", "true");
         setIsAuthenticated(true);
       } else {
