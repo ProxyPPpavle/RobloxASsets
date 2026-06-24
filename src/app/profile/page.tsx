@@ -2,6 +2,7 @@
 
 
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import AppShell from "@/components/AppShell";
 import ProfileClient from "@/components/ProfileClient";
 import Auth from "@/components/Auth";
@@ -23,17 +24,23 @@ export default async function ProfilePage() {
     );
   }
 
-  const { data: profile } = await supabase
+  const adminDb = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data: profile } = await adminDb
     .from("profiles")
     .select("*")
     .eq("id", session.user.id)
     .single();
 
-  const { data: products } = await supabase
+  const { data: products } = await adminDb
     .from("products")
     .select(
       `
       *,
+      profiles ( username, avatar_url ),
       product_analytics ( views, clicks, likes ),
       product_monetization ( promoted, promoted_until )
     `

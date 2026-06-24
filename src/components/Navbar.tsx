@@ -23,8 +23,8 @@ export default function Navbar({ user }: { user: User | null }) {
           .from("profiles")
           .select("roblox_id")
           .eq("id", uid)
-          .single();
-        setRobloxId(data?.roblox_id ?? null);
+          .limit(1);
+        setRobloxId(data?.[0]?.roblox_id ?? null);
       } catch {
         setRobloxId(null);
       }
