@@ -35,7 +35,7 @@ export default function Navbar({ user }: { user: User | null; role?: string }) {
           <img 
             src="/LogoAssetsPP.png" 
             alt="AssetsPP Logo" 
-            className="w-12 h-12 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-all duration-300 [filter:drop-shadow(0_4px_14px_rgba(15,23,42,0.8))_drop-shadow(0_0_15px_rgba(59,130,246,0.8))]" 
+            className="w-14 h-14 md:w-16 md:h-16 object-contain group-hover:scale-105 transition-all duration-300 [filter:drop-shadow(0_4px_14px_rgba(15,23,42,0.8))_drop-shadow(0_0_15px_rgba(59,130,246,0.8))]" 
           />
           <span className="text-lg md:text-xl font-display font-bold text-white tracking-tight drop-shadow-sm">
             Assets<span className="text-blue-500 font-extrabold">PP</span>

@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { X, Save, FileCode, Sliders, Info, UploadCloud, HelpCircle } from "lucide-react";
+import { X, Save, FileCode, Sliders, Info, UploadCloud, HelpCircle, Loader2, CheckCircle2 } from "lucide-react";
 import CardStudio from "./CardStudio";
 import { CardStyles } from "../types";
 
 export default function UploadModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [validationError, setValidationError] = useState("");
   
   const [activeTab, setActiveTab] = useState<"info" | "design">("info");
@@ -85,6 +87,15 @@ export default function UploadModal({ onClose }: { onClose: () => void }) {
 
     setValidationError("");
     setLoading(true);
+    setIsSuccess(false);
+
+    const messages = ["Publishing...", "Uploading assets...", "Redirecting...", "Polishing..."];
+    let step = 0;
+    setLoadingMessage(messages[step]);
+    const interval = setInterval(() => {
+      step = (step + 1) % messages.length;
+      setLoadingMessage(messages[step]);
+    }, 1200);
 
     const formData = new FormData();
     formData.append("title", title);
@@ -102,18 +113,22 @@ export default function UploadModal({ onClose }: { onClose: () => void }) {
         body: formData,
       });
       const data = await response.json();
+      clearInterval(interval);
 
       if (data.success) {
-        alert("Your post is now waiting for approval. This usually happens in less than 1 hour!");
-        window.location.reload();
+        setIsSuccess(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         setValidationError(data.error || "Upload error.");
+        setLoading(false);
       }
     } catch (err: any) {
+      clearInterval(interval);
       setValidationError("System error: " + err.message);
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -140,32 +155,56 @@ export default function UploadModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="flex border-b border-slate-800 bg-[#090c14]/40">
-          <button
-            type="button"
-            onClick={() => setActiveTab("info")}
-            className={`flex-1 py-3 px-4 font-mono text-[11px] font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              activeTab === "info"
-                ? "bg-[#151a2e] border-b-2 border-blue-500 text-white"
-                : "text-slate-500 hover:text-slate-300 hover:bg-[#151a2e]/30"
-            }`}
-          >
-            <Info className="w-4 h-4 text-slate-400" />
-            1. Parameters
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("design")}
-            className={`flex-1 py-3 px-4 font-mono text-[11px] font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
-              activeTab === "design"
-                ? "bg-[#151a2e] border-b-2 border-blue-500 text-white"
-                : "text-slate-500 hover:text-slate-300 hover:bg-[#151a2e]/30"
-            }`}
-          >
-            <Sliders className="w-4 h-4 text-slate-400" />
-            2. Summary
-          </button>
-        </div>
+        {isSuccess ? (
+          <div className="flex flex-col items-center justify-center p-16 text-center space-y-6">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", bounce: 0.5 }}
+            >
+              <CheckCircle2 className="w-20 h-20 text-emerald-500" />
+            </motion.div>
+            <h3 className="text-2xl font-black text-white tracking-tight">Post Uploaded!</h3>
+            <p className="text-slate-400 font-mono text-sm">{loadingMessage}</p>
+          </div>
+        ) : loading ? (
+          <div className="flex flex-col items-center justify-center p-16 text-center space-y-6">
+            <Loader2 className="w-16 h-16 text-blue-500 animate-spin" />
+            <h3 className="text-xl font-bold text-white tracking-tight animate-pulse">{loadingMessage}</h3>
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex border-b border-slate-800 bg-[#090c14]/40">
+              <button
+                type="button"
+                onClick={() => setActiveTab("info")}
+                className={`flex-1 py-3 px-4 font-mono text-[11px] font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  activeTab === "info"
+                    ? "bg-[#151a2e] border-b-2 border-blue-500 text-white"
+                    : "text-slate-500 hover:text-slate-300 hover:bg-[#151a2e]/30"
+                }`}
+              >
+                <Info className="w-4 h-4 text-slate-400" />
+                1. Parameters
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("design")}
+                className={`flex-1 py-3 px-4 font-mono text-[11px] font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  activeTab === "design"
+                    ? "bg-[#151a2e] border-b-2 border-blue-500 text-white"
+                    : "text-slate-500 hover:text-slate-300 hover:bg-[#151a2e]/30"
+                }`}
+              >
+                <Sliders className="w-4 h-4 text-slate-400" />
+                2. Summary
+              </button>
+            </div>
 
         <div id="upload-form-pane" className="p-6">
           {validationError && (
@@ -372,6 +411,8 @@ export default function UploadModal({ onClose }: { onClose: () => void }) {
             )}
           </div>
         </div>
+        </>
+        )}
 
       </motion.div>
     </div>
