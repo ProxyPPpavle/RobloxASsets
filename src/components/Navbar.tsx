@@ -1,13 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import AuthModal from "./AuthModal";
 import { LogIn } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar({ user }: { user: User | null; role?: string }) {
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [clientUser, setClientUser] = useState<User | null>(user);
+  const [isLoading, setIsLoading] = useState(!user);
+
+  useEffect(() => {
+    if (user) {
+      setClientUser(user);
+      setIsLoading(false);
+    } else {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data }) => {
+        setClientUser(data.user);
+        setIsLoading(false);
+      });
+    }
+  }, [user]);
 
   return (
     <>
@@ -19,14 +35,14 @@ export default function Navbar({ user }: { user: User | null; role?: string }) {
           <img 
             src="/LogoAssetsPP.png" 
             alt="AssetsPP Logo" 
-            className="w-12 h-12 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-all duration-300 [filter:drop-shadow(0_4px_14px_rgba(15,23,42,0.55))_drop-shadow(0_0_12px_rgba(59,130,246,0.45))]" 
+            className="w-12 h-12 md:w-14 md:h-14 object-contain group-hover:scale-105 transition-all duration-300 [filter:drop-shadow(0_4px_14px_rgba(15,23,42,0.8))_drop-shadow(0_0_15px_rgba(59,130,246,0.8))]" 
           />
           <span className="text-lg md:text-xl font-display font-bold text-white tracking-tight drop-shadow-sm">
             Assets<span className="text-blue-500 font-extrabold">PP</span>
           </span>
         </Link>
 
-        {!user && (
+        {!clientUser && !isLoading && (
           <div className="flex items-center gap-2 pointer-events-auto ml-1">
             <button
               type="button"

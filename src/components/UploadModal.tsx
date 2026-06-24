@@ -104,6 +104,7 @@ export default function UploadModal({ onClose }: { onClose: () => void }) {
       const data = await response.json();
 
       if (data.success) {
+        alert("Your post is now waiting for approval. This usually happens in less than 1 hour!");
         window.location.reload();
       } else {
         setValidationError(data.error || "Upload error.");
