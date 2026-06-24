@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { fetchRobloxPriceFromLink } from "@/lib/roblox";
 import { revalidateTag } from "next/cache";
 
@@ -59,7 +60,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await supabase.from("notifications").insert({
+    const adminDb = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    await adminDb.from("notifications").insert({
       user_id: product.seller_id,
       title: "Product Approved",
       message:

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { removeProductStorageFiles } from "@/lib/removeProductStorage";
 import { revalidateTag } from "next/cache";
 
@@ -57,8 +58,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: deleteError.message }, { status: 400 });
     }
 
+    const adminDb = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     // Pošalji notifikaciju kreatoru na engleskom
-    const { error: notifError } = await supabase
+    const { error: notifError } = await adminDb
       .from("notifications")
       .insert([
         {
