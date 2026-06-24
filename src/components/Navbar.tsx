@@ -41,25 +41,33 @@ export default function Navbar({ user }: { user: User | null; role?: string }) {
             Assets<span className="text-blue-500 font-extrabold">PP</span>
           </span>
         </Link>
-
-        {!clientUser && !isLoading && (
-          <div className="flex items-center gap-2 pointer-events-auto ml-1">
-            <button
-              type="button"
-              onClick={() => setAuthModalOpen(true)}
-              className="text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              Sign In
-            </button>
-            <a
-              href="/api/roblox/auth?next=/"
-              className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
-            >
-              CONTINUE WITH ROBLOX OAUTH
-            </a>
-          </div>
-        )}
+{isLoading ? (
+  <div className="flex items-center gap-2 ml-1">
+    <div className="animate-pulse bg-slate-700 h-8 w-20 rounded" />
+  </div>
+) : clientUser ? (
+  <Link href="/profile" className="ml-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-sm text-white hover:bg-slate-700 transition-colors">
+    <span className="font-medium">{clientUser.email?.split('@')[0] ?? 'Profile'}</span>
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A9 9 0 1118.88 6.196" /></svg>
+  </Link>
+) : (
+  <div className="flex items-center gap-2 pointer-events-auto ml-1">
+    <button
+      type="button"
+      onClick={() => setAuthModalOpen(true)}
+      className="text-xs font-sans text-white font-bold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
+    >
+      <LogIn className="w-3.5 h-3.5" />
+      Sign In
+    </button>
+    <a
+      href="/api/roblox/auth?next=/"
+      className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer"
+    >
+      CONTINUE WITH ROBLOX OAUTH
+    </a>
+  </div>
+)}
       </header>
 
       {authModalOpen && <AuthModal onClose={() => setAuthModalOpen(false)} />}
