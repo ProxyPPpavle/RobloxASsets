@@ -99,10 +99,10 @@ export default function ProductModal({
               }
               return;
             }
-          } else if (res.status === 403) {
-            // Need to verify Roblox account
+          } else if (res.status === 403 || res.status === 401) {
+            // Roblox not linked or unauthorized - just open the purchase link directly
             setCheckingOwnership(false);
-            onRequireAuth?.();
+            window.open(product.gamepass_link, "_blank", "noreferrer");
             return;
           }
         } catch (e) {

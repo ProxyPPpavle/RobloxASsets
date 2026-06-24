@@ -82,22 +82,13 @@ export default function Navbar({ user }: { user: User | null }) {
                 />
               </svg>
             </Link>
-
-            {allSet ? (
+            {allSet && (
               <span className="text-xs font-medium text-green-400 bg-green-900/30 rounded-md px-2 py-1 pointer-events-auto">
                 ✓ All set
               </span>
-            ) : (
-              !robloxId && (
-                <a
-                  href="/api/roblox/auth?next=/"
-                  className="text-xs font-sans text-white font-bold bg-sky-500 hover:bg-sky-600 py-2 px-4 rounded-lg shadow-md transition-all flex items-center gap-1 cursor-pointer pointer-events-auto"
-                >
-                  LINK ROBLOX
-                </a>
-              )
             )}
           </>
+
         ) : (
           <div className="flex items-center gap-2 pointer-events-auto ml-1">
             <button

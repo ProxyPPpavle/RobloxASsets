@@ -55,7 +55,6 @@ export default function FeedClient({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [selectedProduct, setSelectedProduct] = useState<FeedProduct | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
-  const [showRobloxVerify, setShowRobloxVerify] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<string>>(
     () => new Set(initialLikedIds.map(String))
   );
@@ -455,18 +454,13 @@ export default function FeedClient({
           hasLiked={likedIds.has(String(selectedProduct.id))}
           onLikeToggle={(id, action) => applyLikeState(String(id), action)}
           onRequireAuth={() => {
-            if (!userId) {
-              setAuthOpen(true);
-            } else {
-              setShowRobloxVerify(true);
-            }
+            setAuthOpen(true);
           }}
           onClose={() => setSelectedProduct(null)}
         />
       )}
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
-      {showRobloxVerify && <RobloxVerifyModal onClose={() => setShowRobloxVerify(false)} />}
 
       {showReviewerModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
